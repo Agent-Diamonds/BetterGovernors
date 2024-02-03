@@ -1,7 +1,7 @@
 <Module>
     <Name value="Better Governors"/>
     <Id value="BetterGovernors"/>
-    <Version value="v.0.0.1"/>
+    <Version value="v0.0.1"/>
     <SingleplayerModule value="true"/>
     <MultiplayerModule value="false"/>
     <DependedModules>
