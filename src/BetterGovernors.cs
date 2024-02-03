@@ -6,6 +6,7 @@ using TaleWorlds.CampaignSystem.Issues;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Localization;
 using System.Collections.Generic;
+using System;
 
 namespace BetterGovernors
 {
@@ -37,11 +38,11 @@ namespace BetterGovernors
         /// </summary>
         protected override void OnSubModuleLoad()
         {
-            base.OnSubModuleLoad();
-            var messageText = "Loaded Better Governors";
-            var messageColor = Color.ConvertStringToColor("#03fcf8ff");
-            InformationManager.DisplayMessage(new InformationMessage(messageText, messageColor));
-
+            Module.CurrentModule.AddInitialStateOption(new InitialStateOption("Better Governors Test",
+                new TextObject("Better Governors Test", null),
+                9990,
+                () => { InformationManager.DisplayMessage(new InformationMessage("Better Governors Test Successful!")); },
+                () => { return (false, null); }));
         }
 
         /// <summary>
@@ -54,7 +55,7 @@ namespace BetterGovernors
             /// </summary>
             public override void RegisterEvents()
             {
-                CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, HandleSettlementIssues);
+                CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, this.HandleSettlementIssues);
             }
 
             /// <summary>
@@ -62,6 +63,7 @@ namespace BetterGovernors
             /// </summary>
             private void HandleSettlementIssues()
             {
+                InformationManager.DisplayMessage(new InformationMessage("Running Handle Issues..."));
                 var issueManager = Campaign.Current.IssueManager;
                 if (issueManager == null)
                     return;
