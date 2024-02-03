@@ -25,24 +25,9 @@ namespace BetterGovernors
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
         {
             if (!(game.GameType is Campaign))
-            {
-                InformationManager.DisplayMessage(new InformationMessage("Not Campaign Game Type"));
                 return;
-            }
-            InformationManager.DisplayMessage(new InformationMessage("Campaign Game Type"));
+            InformationManager.DisplayMessage(new InformationMessage("Loaded Better Governors"));
             ((CampaignGameStarter)gameStarterObject).AddBehavior(new BetterGovernorsBehavior());
-        }
-
-        /// <summary>
-        /// Called when the submodule loads. Lets player know the submodule has loaded properly.
-        /// </summary>
-        protected override void OnSubModuleLoad()
-        {
-            Module.CurrentModule.AddInitialStateOption(new InitialStateOption("Better Governors Test",
-                new TextObject("Better Governors Test", null),
-                9990,
-                () => { InformationManager.DisplayMessage(new InformationMessage("Better Governors Test Successful!")); },
-                () => { return (false, null); }));
         }
 
         /// <summary>
@@ -63,7 +48,6 @@ namespace BetterGovernors
             /// </summary>
             private void HandleSettlementIssues()
             {
-                InformationManager.DisplayMessage(new InformationMessage("Running Handle Issues..."));
                 var issueManager = Campaign.Current.IssueManager;
                 if (issueManager == null)
                     return;
@@ -152,7 +136,7 @@ namespace BetterGovernors
             private void DisplayGovernorActionMessage(Hero governor, Settlement settlement)
             {
                 string messageText = $"{governor.Name} settled issues in {settlement.Name}.";
-                var messageColor = Color.ConvertStringToColor("#03fcf8ff");
+                var messageColor = Color.ConvertStringToColor("#a318c9ff");
                 InformationManager.DisplayMessage(new InformationMessage(messageText, messageColor));
             }
 
