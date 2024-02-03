@@ -15,7 +15,7 @@
         <SubModule>
             <Name value="BetterGovernors"/>
             <DLLName value="BetterGovernors.dll"/>
-            <SubModuleClassType value="BetterGovernors.MySubModule"/>
+            <SubModuleClassType value="BetterGovernors.BetterGovernors"/>
             <Tags>
                 <Tag key="DedicatedServerType" value="none" />
                 <Tag key="IsNoRenderModeElement" value="false" />
