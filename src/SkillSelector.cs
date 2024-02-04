@@ -45,28 +45,28 @@ namespace BetterGovernors
         /// <summary>
         /// Constructor, builds list of relevant governor skills and adds probability weights.
         /// </summary>
-        public SkillSelector()
+        public SkillSelector(bool uniformDistribution = false)
         {
             random = new Random();
             skillWeights = new Dictionary<GovernorSkills, int>
             {
-                { GovernorSkills.Steward, 1 },
-                { GovernorSkills.Engineering,1 },
-                { GovernorSkills.Medicine, 1 },
-                { GovernorSkills.Trade, 1 },
-                { GovernorSkills.Charm, 1 },
-                { GovernorSkills.Leadership, 1 },
-                { GovernorSkills.Roguery, 1 },
-                { GovernorSkills.Scouting, 1 },
-                { GovernorSkills.Tactics, 1 },
-                { GovernorSkills.Athletics, 1 },
-                { GovernorSkills.Riding, 1 },
-                { GovernorSkills.Throwing, 1 },
-                { GovernorSkills.Crossbow, 1 },
-                { GovernorSkills.Bow, 1 },
-                { GovernorSkills.Polearm, 1 },
-                { GovernorSkills.TwoHanded, 1 },
-                { GovernorSkills.OneHanded, 1 }
+                { GovernorSkills.Steward, uniformDistribution ? 1 : 10 },
+                { GovernorSkills.Engineering,uniformDistribution ? 1 : 8 },
+                { GovernorSkills.Medicine, uniformDistribution ? 1 : 7 },
+                { GovernorSkills.Trade, uniformDistribution ? 1 : 9 },
+                { GovernorSkills.Charm, uniformDistribution ? 1 : 9 },
+                { GovernorSkills.Leadership, uniformDistribution ? 1 : 10 },
+                { GovernorSkills.Roguery,uniformDistribution ? 1 : 5 },
+                { GovernorSkills.Scouting, uniformDistribution ? 1 : 2 },
+                { GovernorSkills.Tactics, uniformDistribution ? 1 : 4 },
+                { GovernorSkills.Athletics,uniformDistribution ? 1 : 3 },
+                { GovernorSkills.Riding, uniformDistribution ? 1 : 3 },
+                { GovernorSkills.Throwing, uniformDistribution ? 1 : 2 },
+                { GovernorSkills.Crossbow, uniformDistribution ? 1 : 2 },
+                { GovernorSkills.Bow, uniformDistribution ? 1 : 2 },
+                { GovernorSkills.Polearm, uniformDistribution ? 1 : 2 },
+                { GovernorSkills.TwoHanded, uniformDistribution ? 1 : 2 },
+                { GovernorSkills.OneHanded, uniformDistribution ? 1 : 2 }
             };
         }
 
@@ -86,16 +86,16 @@ namespace BetterGovernors
             {
                 // Random selection based on totaling of weights
                 int randomNumber = random.Next(totalWeight);
-                Console.WriteLine("Random number: " + randomNumber.ToString());
-                Console.WriteLine("Total Weight: " + totalWeight.ToString());
+                //Console.WriteLine("Random number: " + randomNumber.ToString());
+                //Console.WriteLine("Total Weight: " + totalWeight.ToString());
                 int cumulative = 0;
                 foreach (var skill in skillWeights)
                 {
                     cumulative += skill.Value;
                     if (randomNumber < cumulative)
                     {
-                        Console.WriteLine("Cumulative: " + cumulative.ToString());
-                        Console.WriteLine(skill.ToString());
+                        //Console.WriteLine("Cumulative: " + cumulative.ToString());
+                        //Console.WriteLine(skill.ToString());
                         selectedSkills.Add(skill.Key);
                         break; // Break out of the foreach loop once a skill is selected
                     }
