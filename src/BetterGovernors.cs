@@ -62,13 +62,18 @@ namespace BetterGovernors
             /// <summary>
             /// Allots Governor's xp for Governing. Called when resolving issues to avoid iterating towns twice.
             /// </summary>
+            /// /// <param name="governor">The governor to give xp to.</param>
             private void GiveGovernorExperience(Hero governor)
             {
                 int numberOfSkillsToLevel = 3; //constant for now, will be variable later when options are added
                 float xpToGive = 80; //constant for now, will be variable later when options are added
                 List <SkillObject> skillsToLevel = this.skillSelector.GetRandomSkills(numberOfSkillsToLevel);
+                //Dict to hold cumulative xp from duplicate skill selections
                 Dictionary<string, float> skillXpMap = new Dictionary<string, float>();
+                //Dict to map from skill name to in game SkillObject
                 Dictionary<string, SkillObject> nameToSkillMap = new Dictionary<string, SkillObject>();
+
+                //Accumulate xp for each skill to level
                 foreach (SkillObject skill in skillsToLevel)
                 {
                     string skillName = skill.GetName().Value;
@@ -84,7 +89,7 @@ namespace BetterGovernors
                     
                 }
 
-                // Add XP and display messages
+                // Add XP and display messages about cumulative xp gain per skill
                 foreach (var skillXp in skillXpMap)
                 {
                     string skillName = skillXp.Key;
