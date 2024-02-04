@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System;
 using System.ComponentModel;
 using TaleWorlds.ObjectSystem;
+using TaleWorlds.CampaignSystem.Extensions;
 
 namespace BetterGovernors
 {
@@ -64,15 +65,35 @@ namespace BetterGovernors
             private void GiveGovernorExperience(Hero governor)
             {
                 int numberOfSkillsToLevel = 3; //constant for now, will be variable later when options are added
+                float xpToGive = 80; //constant for now, will be variable later when options are added
                 List <SkillObject> skillsToLevel = this.skillSelector.GetRandomSkills(numberOfSkillsToLevel);
+                Dictionary<string, float> skillXpMap = new Dictionary<string, float>();
+                Dictionary<string, SkillObject> nameToSkillMap = new Dictionary<string, SkillObject>();
                 foreach (SkillObject skill in skillsToLevel)
                 {
-                    float xpToGive = 5000; //constant for now, will be variable later when options are added
-                    governor.AddSkillXp(skill, xpToGive);
-                    string messageText = $"{governor.Name} gained {xpToGive} xp in {skill.GetName().Value}.";
-                    InformationManager.DisplayMessage(new InformationMessage(messageText));
+                    string skillName = skill.GetName().Value;
+                    if (skillXpMap.ContainsKey(skillName))
+                    {
+                        skillXpMap[skillName] += xpToGive;
+                    }
+                    else
+                    {
+                        skillXpMap[skillName] = xpToGive;
+                        nameToSkillMap[skillName] = skill;
+                    }
+                    
                 }
-                //governor.AddSkillXp(lowestSkill, (float)num7 * ((float)totalMen * 0.1f));
+
+                // Add XP and display messages
+                foreach (var skillXp in skillXpMap)
+                {
+                    string skillName = skillXp.Key;
+                    SkillObject skill = nameToSkillMap[skillName];
+
+                    string messageText = $"{governor.Name} gained {skillXp.Value} xp in {skillName}.";
+                    InformationManager.DisplayMessage(new InformationMessage(messageText));
+                    governor.AddSkillXp(skill, skillXp.Value); // Add cumulative XP to the skill
+                }
             }
 
             /// <summary>
