@@ -7,6 +7,8 @@ using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Localization;
 using System.Collections.Generic;
 using System;
+using System.ComponentModel;
+using static BetterGovernors.SkillSelector;
 
 namespace BetterGovernors
 {
@@ -35,28 +37,54 @@ namespace BetterGovernors
         /// </summary>
         internal class BetterGovernorsBehavior : CampaignBehaviorBase
         {
+            //instance variables
+            private SkillSelector skillSelector;
+
+
+            /// <summary>
+            /// Constructor, prebuilds random skills selector.
+            /// </summary>
+            public BetterGovernorsBehavior() {
+                skillSelector = new SkillSelector();
+            }
             /// <summary>
             /// Registers events for the campaign behavior.
             /// </summary>
             public override void RegisterEvents()
             {
-                CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, this.HandleSettlementIssues);
+                CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, this.ProcessDailyGovernorActions);
+            }
+
+
+            /// <summary>
+            /// Allots Governor's xp for Governing. Called when resolving issues to avoid iterating towns twice.
+            /// </summary>
+            private void GiveGovernorExperience(Hero governor)
+            {
+                int numberOfSkillsToLevel = 3; //constant for now, will be variable later when options are added
+                List < SkillSelector.GovernorSkills > skills = this.skillSelector.GetRandomSkills(numberOfSkillsToLevel);
+                SkillObject skill = null; //decide skill
+                //governor.AddSkillXp(lowestSkill, (float)num7 * ((float)totalMen * 0.1f));
             }
 
             /// <summary>
             /// Handles the settlement issues on a daily basis.
             /// </summary>
-            private void HandleSettlementIssues()
+            private void ProcessDailyGovernorActions()
             {
                 var issueManager = Campaign.Current.IssueManager;
                 if (issueManager == null)
                     return;
 
+                //iterate through all the player settlements
                 foreach (var settlement in Clan.PlayerClan.Settlements)
                 {
+                    //Select Towns (not villages) that have a govenor. Villages can't have governor's, so we check towns only
                     if (settlement.IsVillage || settlement.Town.Governor == null)
                         continue;
 
+                    //Give the governor XP, resolve any issues in the Town and then its bound villages
+                    GiveGovernorExperience(settlement.Town.Governor);
                     ResolveIssuesInSettlement(settlement, issueManager.Issues);
                     ResolveIssuesInBoundVillages(settlement, issueManager.Issues);
                 }
