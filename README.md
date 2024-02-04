@@ -1,6 +1,6 @@
 # BetterGovernors Mod for Bannerlord
 
-Welcome to the **BetterGovernors** mod for Mount & Blade II: Bannerlord! This mod enhances the functionality of governors in your game, providing a more immersive and strategic experience. This is primarily accomplished by allowing your governors to resolve settlement issues for you! No more parading around endlessly completing the same repetitive quests just to keep your settlements happy.
+Welcome to the **BetterGovernors** mod for Mount & Blade II: Bannerlord! This mod enhances the functionality of governors in your game, providing a more immersive and strategic experience.
 
 ## Installation
 
@@ -32,9 +32,9 @@ Follow these steps to install the **BetterGovernors** mod:
 
 ## Features
 
-- **Governor Enhancement**: Improves the way governors work in the game, offering a more dynamic and impactful role.
+- **Governor Enhancement**: Governors resolve settlement issues. Governors will gain xp in skills with governor perks every day, with a higher chance of gaining xp in a skill associated with governing, and a lower chance for skills such as combat.
 
-- **Configurable Settings**: Customizable settings to tailor the governor's behavior to your preferences.
+- **Configurable Settings**: (WIP) Customizable settings to tailor the governor's skill gain to your preference.
 
 - **Daily Updates**: The mod performs checks and updates on each in-game day, ensuring that the governors' actions and effects are consistently applied.
 
