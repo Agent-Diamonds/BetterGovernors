@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem.Extensions;
+
 
 namespace BetterGovernors
 {
@@ -37,6 +39,7 @@ namespace BetterGovernors
 
         //instance variables
         private readonly Dictionary<GovernorSkills, int> skillWeights;
+        private Random random;
 
 
         /// <summary>
@@ -44,24 +47,25 @@ namespace BetterGovernors
         /// </summary>
         public SkillSelector()
         {
+            random = new Random();
             skillWeights = new Dictionary<GovernorSkills, int>
             {
-                { GovernorSkills.Steward, 10 },
-                { GovernorSkills.Engineering, 5 },
-                { GovernorSkills.Medicine, 5 },
-                { GovernorSkills.Trade, 10 },
-                { GovernorSkills.Charm, 5 },
-                { GovernorSkills.Leadership, 10 },
-                { GovernorSkills.Roguery, 5 },
-                { GovernorSkills.Scouting, 5 },
-                { GovernorSkills.Tactics, 5 },
-                { GovernorSkills.Athletics, 3 },
-                { GovernorSkills.Riding, 3 },
-                { GovernorSkills.Throwing, 2 },
-                { GovernorSkills.Crossbow, 2 },
-                { GovernorSkills.Bow, 2 },
-                { GovernorSkills.Polearm, 2 },
-                { GovernorSkills.TwoHanded, 2 },
+                { GovernorSkills.Steward, 1 },
+                { GovernorSkills.Engineering,1 },
+                { GovernorSkills.Medicine, 1 },
+                { GovernorSkills.Trade, 1 },
+                { GovernorSkills.Charm, 1 },
+                { GovernorSkills.Leadership, 1 },
+                { GovernorSkills.Roguery, 1 },
+                { GovernorSkills.Scouting, 1 },
+                { GovernorSkills.Tactics, 1 },
+                { GovernorSkills.Athletics, 1 },
+                { GovernorSkills.Riding, 1 },
+                { GovernorSkills.Throwing, 1 },
+                { GovernorSkills.Crossbow, 1 },
+                { GovernorSkills.Bow, 1 },
+                { GovernorSkills.Polearm, 1 },
+                { GovernorSkills.TwoHanded, 1 },
                 { GovernorSkills.OneHanded, 1 }
             };
         }
@@ -74,7 +78,6 @@ namespace BetterGovernors
         public List<GovernorSkills> GetRandomSkills(int numberOfSkillsToSelect)
         {
             List<GovernorSkills> selectedSkills = new List<GovernorSkills>();
-            var random = new Random();
 
             // Total sum of all weights
             int totalWeight = skillWeights.Sum(sw => sw.Value);
@@ -83,12 +86,16 @@ namespace BetterGovernors
             {
                 // Random selection based on totaling of weights
                 int randomNumber = random.Next(totalWeight);
+                Console.WriteLine("Random number: " + randomNumber.ToString());
+                Console.WriteLine("Total Weight: " + totalWeight.ToString());
                 int cumulative = 0;
                 foreach (var skill in skillWeights)
                 {
                     cumulative += skill.Value;
                     if (randomNumber < cumulative)
                     {
+                        Console.WriteLine("Cumulative: " + cumulative.ToString());
+                        Console.WriteLine(skill.ToString());
                         selectedSkills.Add(skill.Key);
                         break; // Break out of the foreach loop once a skill is selected
                     }
