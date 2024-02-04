@@ -7,13 +7,13 @@ Welcome to the **BetterGovernors** mod for Mount & Blade II: Bannerlord! This mo
 Follow these steps to install the **BetterGovernors** mod:
 
 1. **Download the Mod**:
-    - Download the latest version of **BetterGovernors** from the releases section.
+    - Download the latest version of **BetterGovernors.zip** from the releases section.
 
 2. **Locating the Modules Folder**:
     - Navigate to your Bannerlord installation directory. Typically, this can be found at `C:\Program Files (x86)\Steam\steamapps\common\Mount & Blade II Bannerlord`.
 
 3. **Installing the Mod**:
-    - Copy the entire `BetterGovernors` folder (which contains the compiled `.dll` file) into the `Modules` folder of your Bannerlord installation.
+    - Unzip `BetterGovernors.zip`. Copy the entirety of the now unzipped `BetterGovernors` folder (which contains the compiled `.dll` file) into the `Modules` folder of your Bannerlord installation.
     
     For example, your directory structure should look something like this:
     ```
