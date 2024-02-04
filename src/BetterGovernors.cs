@@ -8,7 +8,7 @@ using TaleWorlds.Localization;
 using System.Collections.Generic;
 using System;
 using System.ComponentModel;
-using static BetterGovernors.SkillSelector;
+using TaleWorlds.ObjectSystem;
 
 namespace BetterGovernors
 {
@@ -30,6 +30,7 @@ namespace BetterGovernors
                 return;
             InformationManager.DisplayMessage(new InformationMessage("Loaded Better Governors"));
             ((CampaignGameStarter)gameStarterObject).AddBehavior(new BetterGovernorsBehavior());
+
         }
 
         /// <summary>
@@ -45,7 +46,8 @@ namespace BetterGovernors
             /// Constructor, prebuilds random skills selector.
             /// </summary>
             public BetterGovernorsBehavior() {
-                skillSelector = new SkillSelector();
+                List<SkillObject> skillList = (List<SkillObject>)MBObjectManager.Instance.GetObjectTypeList<SkillObject>();
+                skillSelector = new SkillSelector(skillList);
             }
             /// <summary>
             /// Registers events for the campaign behavior.
@@ -62,8 +64,14 @@ namespace BetterGovernors
             private void GiveGovernorExperience(Hero governor)
             {
                 int numberOfSkillsToLevel = 3; //constant for now, will be variable later when options are added
-                List < SkillSelector.GovernorSkills > skills = this.skillSelector.GetRandomSkills(numberOfSkillsToLevel);
-                SkillObject skill = null; //decide skill
+                List <SkillObject> skillsToLevel = this.skillSelector.GetRandomSkills(numberOfSkillsToLevel);
+                foreach (SkillObject skill in skillsToLevel)
+                {
+                    float xpToGive = 5000; //constant for now, will be variable later when options are added
+                    governor.AddSkillXp(skill, xpToGive);
+                    string messageText = $"{governor.Name} gained {xpToGive} xp in {skill.GetName().Value}.";
+                    InformationManager.DisplayMessage(new InformationMessage(messageText));
+                }
                 //governor.AddSkillXp(lowestSkill, (float)num7 * ((float)totalMen * 0.1f));
             }
 
