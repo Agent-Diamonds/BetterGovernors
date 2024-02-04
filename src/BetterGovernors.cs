@@ -7,6 +7,9 @@ using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Localization;
 using System.Collections.Generic;
 using System;
+using System.ComponentModel;
+using TaleWorlds.ObjectSystem;
+using TaleWorlds.CampaignSystem.Extensions;
 
 namespace BetterGovernors
 {
@@ -28,6 +31,7 @@ namespace BetterGovernors
                 return;
             InformationManager.DisplayMessage(new InformationMessage("Loaded Better Governors"));
             ((CampaignGameStarter)gameStarterObject).AddBehavior(new BetterGovernorsBehavior());
+
         }
 
         /// <summary>
@@ -35,28 +39,86 @@ namespace BetterGovernors
         /// </summary>
         internal class BetterGovernorsBehavior : CampaignBehaviorBase
         {
+            //instance variables
+            private SkillSelector skillSelector;
+
+
+            /// <summary>
+            /// Constructor, prebuilds random skills selector.
+            /// </summary>
+            public BetterGovernorsBehavior() {
+                List<SkillObject> skillList = (List<SkillObject>)MBObjectManager.Instance.GetObjectTypeList<SkillObject>();
+                skillSelector = new SkillSelector(skillList);
+            }
             /// <summary>
             /// Registers events for the campaign behavior.
             /// </summary>
             public override void RegisterEvents()
             {
-                CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, this.HandleSettlementIssues);
+                CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, this.ProcessDailyGovernorActions);
+            }
+
+
+            /// <summary>
+            /// Allots Governor's xp for Governing. Called when resolving issues to avoid iterating towns twice.
+            /// </summary>
+            /// /// <param name="governor">The governor to give xp to.</param>
+            private void GiveGovernorExperience(Hero governor)
+            {
+                int numberOfSkillsToLevel = 3; //constant for now, will be variable later when options are added
+                float xpToGive = 80; //constant for now, will be variable later when options are added
+                List <SkillObject> skillsToLevel = this.skillSelector.GetRandomSkills(numberOfSkillsToLevel);
+                //Dict to hold cumulative xp from duplicate skill selections
+                Dictionary<string, float> skillXpMap = new Dictionary<string, float>();
+                //Dict to map from skill name to in game SkillObject
+                Dictionary<string, SkillObject> nameToSkillMap = new Dictionary<string, SkillObject>();
+
+                //Accumulate xp for each skill to level
+                foreach (SkillObject skill in skillsToLevel)
+                {
+                    string skillName = skill.GetName().Value;
+                    if (skillXpMap.ContainsKey(skillName))
+                    {
+                        skillXpMap[skillName] += xpToGive;
+                    }
+                    else
+                    {
+                        skillXpMap[skillName] = xpToGive;
+                        nameToSkillMap[skillName] = skill;
+                    }
+                    
+                }
+
+                // Add XP and display messages about cumulative xp gain per skill
+                foreach (var skillXp in skillXpMap)
+                {
+                    string skillName = skillXp.Key;
+                    SkillObject skill = nameToSkillMap[skillName];
+
+                    string messageText = $"{governor.Name} gained {skillXp.Value} xp in {skillName}.";
+                    InformationManager.DisplayMessage(new InformationMessage(messageText));
+                    governor.AddSkillXp(skill, skillXp.Value); // Add cumulative XP to the skill
+                }
             }
 
             /// <summary>
             /// Handles the settlement issues on a daily basis.
             /// </summary>
-            private void HandleSettlementIssues()
+            private void ProcessDailyGovernorActions()
             {
                 var issueManager = Campaign.Current.IssueManager;
                 if (issueManager == null)
                     return;
 
+                //iterate through all the player settlements
                 foreach (var settlement in Clan.PlayerClan.Settlements)
                 {
+                    //Select Towns (not villages) that have a govenor. Villages can't have governor's, so we check towns only
                     if (settlement.IsVillage || settlement.Town.Governor == null)
                         continue;
 
+                    //Give the governor XP, resolve any issues in the Town and then its bound villages
+                    GiveGovernorExperience(settlement.Town.Governor);
                     ResolveIssuesInSettlement(settlement, issueManager.Issues);
                     ResolveIssuesInBoundVillages(settlement, issueManager.Issues);
                 }
