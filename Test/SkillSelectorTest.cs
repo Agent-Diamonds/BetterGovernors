@@ -2,31 +2,36 @@
 using BetterGovernors;
 using System;
 using System.Collections.Generic;
+using TaleWorlds.Core;
 
 namespace Test
 {
     [TestClass]
     public class SkillSelectorTest
     {
+
+
         [TestMethod]
         public void TestSkillSelectorNumber()
         {
-            var skillSelector = new SkillSelector();
-            List<SkillSelector.GovernorSkills> skills = skillSelector.GetRandomSkills(5);
+            List<SkillObject> allSkills = CreateFakeSkillList();
+            var skillSelector = new SkillSelector(allSkills);
+            List<SkillObject> skills = skillSelector.GetRandomSkills(5);
+
             Assert.AreEqual(skills.Count, 5);
-            Console.WriteLine(string.Join(", ", skills));
         }
 
         [TestMethod]
         public void ManuallyVerifyUniformDistribution()
         {
-            var skillSelector = new SkillSelector(true);
-            var skillCounts = new Dictionary<SkillSelector.GovernorSkills, int>();
+            List<SkillObject> allSkills = CreateFakeSkillList();
+            var skillSelector = new SkillSelector(allSkills, true);
+            var skillCounts = new Dictionary<string, int>();
 
             // Initialize the count for each skill to 0
-            foreach (SkillSelector.GovernorSkills skill in Enum.GetValues(typeof(SkillSelector.GovernorSkills)))
+            foreach (SkillObject skill in allSkills)
             {
-                skillCounts[skill] = 0;
+                skillCounts[skill.GetName().Value] = 0;
             }
 
             int numberOfTrials = 100000; // Large number of trials
@@ -38,7 +43,7 @@ namespace Test
                 var selectedSkills = skillSelector.GetRandomSkills(numberOfSkillsToSelect);
                 foreach (var skill in selectedSkills)
                 {
-                    skillCounts[skill]++;
+                    skillCounts[skill.GetName().Value]++;
                 }
             }
 
@@ -55,13 +60,14 @@ namespace Test
         [TestMethod]
         public void ManuallyVerifyNonUniformDistribution()
         {
-            var skillSelector = new SkillSelector();
-            var skillCounts = new Dictionary<SkillSelector.GovernorSkills, int>();
+            List<SkillObject> allSkills = CreateFakeSkillList();
+            var skillSelector = new SkillSelector(allSkills, false);
+            var skillCounts = new Dictionary<string, int>();
 
             // Initialize the count for each skill to 0
-            foreach (SkillSelector.GovernorSkills skill in Enum.GetValues(typeof(SkillSelector.GovernorSkills)))
+            foreach (SkillObject skill in allSkills)
             {
-                skillCounts[skill] = 0;
+                skillCounts[skill.GetName().Value] = 0;
             }
 
             int numberOfTrials = 100000; // Large number of trials
@@ -73,7 +79,7 @@ namespace Test
                 var selectedSkills = skillSelector.GetRandomSkills(numberOfSkillsToSelect);
                 foreach (var skill in selectedSkills)
                 {
-                    skillCounts[skill]++;
+                    skillCounts[skill.GetName().Value]++;
                 }
             }
 
@@ -87,5 +93,31 @@ namespace Test
             }
         }
 
+
+        public static List<SkillObject> CreateFakeSkillList()
+        {
+            return new List<SkillObject>
+            {
+                new SkillObject("OneHanded"),
+                new SkillObject("TwoHanded"),
+                new SkillObject("Polearm"),
+                new SkillObject("Bow"),
+                new SkillObject("Crossbow"),
+                new SkillObject("Throwing"),
+                new SkillObject("Riding"),
+                new SkillObject("Athletics"),
+                new SkillObject("Smithing"),
+                new SkillObject("Scouting"),
+                new SkillObject("Tactics"),
+                new SkillObject("Roguery"),
+                new SkillObject("Charm"),
+                new SkillObject("Leadership"),
+                new SkillObject("Trade"),
+                new SkillObject("Steward"),
+                new SkillObject("Medicine"),
+                new SkillObject("Engineering")
+            };
+
+        }
     }
 }
